@@ -14,7 +14,7 @@ const Gallery = () => {
     const fetchMedia = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/api/media/${category}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/media/${category}`);
         setMedia(response.data.media);
       } catch (error) {
         console.error('Error fetching media:', error);
@@ -33,6 +33,14 @@ const Gallery = () => {
     cutie: 'Cutie Gallery',
   };
 
+  const handleMediaAction = (media, action) => {
+    console.log(`${action} action for media:`, media);
+  };
+
+  if (loading) {
+    return <Loader text="Loading gallery..." />;
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
       <motion.h1
@@ -43,8 +51,10 @@ const Gallery = () => {
         {categoryTitles[category] || 'Gallery'}
       </motion.h1>
 
-      {loading ? (
-        <Loader />
+      {media.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">No media found in this category.</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {media.map((item, index) => (
@@ -54,7 +64,12 @@ const Gallery = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.1 }}
             >
-              <MediaCard media={item} />
+              <MediaCard 
+                media={item} 
+                onPlay={(media) => handleMediaAction(media, 'play')}
+                onDownload={(media) => handleMediaAction(media, 'download')}
+                onLike={(media) => handleMediaAction(media, 'like')}
+              />
             </motion.div>
           ))}
         </div>

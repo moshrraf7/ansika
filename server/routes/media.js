@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Media = require('../models/Media');
-const auth = require('../middleware/auth');
+const User = require('../models/User');
+const { auth } = require('../middleware/auth');
 const ageCheck = require('../middleware/ageCheck');
 const multer = require('multer');
 const path = require('path');
